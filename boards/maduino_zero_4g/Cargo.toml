@@ -1,0 +1,68 @@
+[package]
+name = "maduino_zero_4g"
+version = "0.1.0"
+authors = ["tuxmain <tuxmain@zettascript.org>"]
+description = "Board Support crate for the Maduino Zero 4G LTE"
+keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
+categories = ["embedded", "hardware-support", "no-std"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/atsamd-rs/atsamd"
+readme = "README.md"
+edition = "2021"
+
+[dependencies.atsamd-hal]
+path = "../../hal"
+version = "0.20"
+default-features = false
+
+[dependencies.cortex-m]
+version = "0.7"
+features = ["critical-section-single-core"]
+
+[dependencies.cortex-m-rt]
+version = "0.7"
+optional = true
+
+[dependencies.embedded-sdmmc]
+version = "0.3.0"
+default-features = false
+optional = true
+
+[dependencies.usb-device]
+version = "0.3.2"
+optional = true
+
+[dev-dependencies]
+cortex-m-rtic = "1.0"
+panic-halt = "0.2"
+panic-semihosting = "0.5"
+usbd-serial = "0.2"
+
+[features]
+# ask the HAL to enable atsamd21g support
+default = ["rt", "atsamd-hal/samd21g", "sdmmc", "usb"]
+dma = ["atsamd-hal/dma"]
+rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
+rtic = ["atsamd-hal/rtic"]
+sdmmc = ["embedded-sdmmc", "atsamd-hal/sdmmc"]
+use_semihosting = []
+usb = ["atsamd-hal/usb", "usb-device"]
+
+# for cargo flash
+[package.metadata]
+chip = "ATSAMD21G18A"
+
+[[example]]
+name = "usb_echo"
+required-features = ["usb"]
+
+[[example]]
+name = "usb_logging"
+required-features = ["usb"]
+
+[[example]]
+name = "blinky_basic"
+
+[profile.release]
+lto = "fat"
+opt-level = 3
